@@ -8,3 +8,52 @@
 
 # Sequelize Migrations
 
+```sh
+cd sequelize-migrations
+npm install
+```
+
+Create your database:
+
+```sh
+npx sequelize-cli db:create
+```
+
+Cool, now let's say you want to add a `username` column to the Users table. How do you do that using [Sequelize Migrations](https://sequelize.org/master/manual/migrations.html)?
+
+```sh
+npx sequelize-cli migration:generate --name add-username-to-users --underscored
+```
+
+Use the `addColumn` method in the migration:
+
+```sh
+'use strict';
+
+module.exports = {
+  up: (queryInterface, Sequelize) => {
+    return queryInterface.addColumn(
+      'Users',
+      'username',
+      Sequelize.INTEGER
+    );
+  },
+  down: (queryInterface, Sequelize) => {
+    return queryInterface.removeColumn('Users', 'username');
+  }
+};
+```
+
+Apply the migration:
+
+```sh
+npx sequelize-cli db:migrate
+```
+
+Let's make sure the column was added:
+
+```sh
+psql sequelize_migrations_development
+SELECT * FROM "Users";
+```
+
