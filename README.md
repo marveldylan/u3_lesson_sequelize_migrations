@@ -49,6 +49,7 @@ Apply the migration:
 ```sh
 npx sequelize-cli db:migrate
 ```
+> If you made a mistake, you can always rollback: npx sequelize-cli db:migrate:undo
 
 Let's make sure the column was added:
 
