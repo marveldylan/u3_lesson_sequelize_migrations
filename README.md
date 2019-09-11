@@ -12,6 +12,8 @@
 >
 > - https://sequelize.org/master/manual/migrations.html
 
+##
+
 Let's go into the repo:
 
 ```sh
