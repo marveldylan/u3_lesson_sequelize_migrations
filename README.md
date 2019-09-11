@@ -8,6 +8,10 @@
 
 # Sequelize Migrations
 
+> Take five minutes and read the Sequelize docs on migrations: 
+>
+> - https://sequelize.org/master/manual/migrations.html
+
 ```sh
 cd sequelize-migrations
 npm install
