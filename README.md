@@ -30,7 +30,7 @@ npx sequelize-cli db:create
 Cool, now let's say you want to add a `username` column to the Users table. How do you do that using [Sequelize Migrations](https://sequelize.org/master/manual/migrations.html)?
 
 ```sh
-npx sequelize-cli migration:generate --name add-username-to-users --underscored
+npx sequelize-cli migration:generate --name add-username-to-users
 ```
 > Want to know more about generating migrations using the Sequelize CLI? Run `npx sequelize-cli migration:generate --help`
 
@@ -67,10 +67,10 @@ psql sequelize_migrations_development
 SELECT * FROM "Users";
 ```
 
-Oh no! I made a mistake! I wanted `user_name` not `username` as the column name. How do I rename an already existing column using migrations?
+Oh no! I made a mistake! I wanted `userName` not `username` as the column name. How do I rename an already existing column using migrations?
 
 ```sh
-npx sequelize-cli migration:generate --name rename-username-to-user_name --underscored
+npx sequelize-cli migration:generate --name rename-username-to-userName
 ```
 
 And write the following code in your migration:
@@ -80,10 +80,10 @@ And write the following code in your migration:
 
 module.exports = {
   up: (queryInterface, Sequelize) => {
-    return queryInterface.renameColumn('Users', 'username', 'user_name');
+    return queryInterface.renameColumn('Users', 'username', 'userName');
   },
   down: (queryInterface, Sequelize) => {
-    return queryInterface.renameColumn('Users', 'user_name', 'username');
+    return queryInterface.renameColumn('Users', 'userName', 'username');
   }
 };
 ```
@@ -104,7 +104,7 @@ SELECT * FROM "Users";
 COol. So now you have one last change you'd like to make to your database. You want to have `email` be required (no nulls). That means we need to create a migration to change our already existing `email` column to not allow nulls.
 
 ```sh
-npx sequelize-cli migration:generate --name change-email-to-not-allow-nulls --underscored
+npx sequelize-cli migration:generate --name change-email-to-not-allow-nulls
 ```
 
 Here is the code using the sequelize `changeColumn` method:
