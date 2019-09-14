@@ -27,28 +27,44 @@ Create your database:
 npx sequelize-cli db:create
 ```
 
-Cool, now let's say you want to add a `username` column to the Users table. How do you do that using [Sequelize Migrations](https://sequelize.org/master/manual/migrations.html)?
+Take a moment to look at the User model that already exists in your codebase:
+
+models/user.js
+```js
+module.exports = (sequelize, DataTypes) => {
+  const User = sequelize.define('User', {
+    first_name: DataTypes.STRING,
+    last_name: DataTypes.STRING,
+    email: DataTypes.STRING,
+    password: DataTypes.STRING
+  }, {});
+  User.associate = function(models) {
+    // associations can be defined here
+  };
+  return User;
+};
+```
+
+Notice how there is no userName attribute, what if we wanted to add `userName` to the User model? How do we use [Sequelize Migrations](https://sequelize.org/master/manual/migrations.html) to do this?
 
 ```sh
-npx sequelize-cli migration:generate --name add-username-to-users
+npx sequelize-cli migration:generate --name add-userName-to-users
 ```
 > Want to know more about generating migrations using the Sequelize CLI? Run `npx sequelize-cli migration:generate --help`
 
 Use the `addColumn` method in the migration:
 
 ```sh
-'use strict';
-
 module.exports = {
   up: (queryInterface, Sequelize) => {
     return queryInterface.addColumn(
       'Users',
-      'username',
+      'userName',
       Sequelize.STRING
     );
   },
   down: (queryInterface, Sequelize) => {
-    return queryInterface.removeColumn('Users', 'username');
+    return queryInterface.removeColumn('Users', 'userName');
   }
 };
 ```
