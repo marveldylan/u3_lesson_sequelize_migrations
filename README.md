@@ -83,23 +83,21 @@ psql sequelize_migrations_development
 SELECT * FROM "Users";
 ```
 
-Oh no! I made a mistake! I wanted `userName` not `username` as the column name. How do I rename an already existing column using migrations?
+Oh no! I made a mistake! I wanted `username` not `userName` as the column name. How do I rename an already existing column using migrations?
 
 ```sh
-npx sequelize-cli migration:generate --name rename-username-to-userName
+npx sequelize-cli migration:generate --name rename-userName-to-username
 ```
 
 And write the following code in your migration:
 
 ```js
-'use strict';
-
 module.exports = {
   up: (queryInterface, Sequelize) => {
-    return queryInterface.renameColumn('Users', 'username', 'userName');
+    return queryInterface.renameColumn('Users', 'userName', 'username');
   },
   down: (queryInterface, Sequelize) => {
-    return queryInterface.renameColumn('Users', 'userName', 'username');
+    return queryInterface.renameColumn('Users', 'username', 'userName');
   }
 };
 ```
@@ -117,7 +115,7 @@ psql sequelize_migrations_development
 SELECT * FROM "Users";
 ```
 
-COol. So now you have one last change you'd like to make to your database. You want to have `email` be required (no nulls). That means we need to create a migration to change our already existing `email` column to not allow nulls.
+Cool. So now you have one last change you'd like to make to your database. You want to have `email` be required (no nulls). That means we need to create a migration to change our already existing `email` column to not allow nulls.
 
 ```sh
 npx sequelize-cli migration:generate --name change-email-to-not-allow-nulls
@@ -126,8 +124,6 @@ npx sequelize-cli migration:generate --name change-email-to-not-allow-nulls
 Here is the code using the sequelize `changeColumn` method:
 
 ```sh
-'use strict';
-
 module.exports = {
   up: (queryInterface, Sequelize) => {
     return queryInterface.changeColumn(
@@ -162,11 +158,11 @@ Test it out:
 
 ```sql
 psql sequelize_migrations_development
-INSERT INTO "Users" VALUES (2, 'Bruno', 'Galvao')
+INSERT INTO "Users" VALUES (2, 'Bruno', 'Galvao');
 ```
 
 The result should be `null value in column "email" violates not-null constraint`. Awesome.
-> Want to successfully `INSERT`? Try `INSERT INTO "Users" VALUES (Default, 'Bruno', 'Galvao', 'bruno@bruno.com', now(), now(), 'bruno')`
+> Want to successfully `INSERT`? Try `INSERT INTO "Users" VALUES (Default, 'Bruno', 'Galvao', 'bruno@bruno.com', 'STRONG', now(), now(), 'bruno');`
 
 ## Conclusion
 
