@@ -15,5 +15,9 @@
   "license": "ISC",
   "devDependencies": {
     "sequelize-cli": "^5.5.1"
+  },
+  "dependencies": {
+    "pg": "^7.12.1",
+    "sequelize": "^5.18.4"
   }
 }
