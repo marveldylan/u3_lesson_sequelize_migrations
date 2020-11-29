@@ -25,13 +25,13 @@ npm install
 Create your database:
 
 ```sh
-sequelize db:create
+npx sequelize-cli db:create
 ```
 
 Run the existing migrations:
 
 ```sh
-sequelize db:migrate
+npx sequelize-cli db:migrate
 ```
 
 Take a moment to look at the User model that already exists in your codebase:
@@ -72,7 +72,7 @@ module.exports = (sequelize, DataTypes) => {
 Notice how there is no userName attribute, what if we wanted to add `username` to the User model? How do we use [Sequelize Migrations](https://sequelize.org/master/manual/migrations.html) to do this?
 
 ```sh
-sequelize migration:generate --name add-username-to-users
+npx sequelize-cli migration:generate --name add-username-to-users
 ```
 
 > Want to know more about generating migrations using the Sequelize CLI? Run `sequelize migration:generate --help`
@@ -130,7 +130,7 @@ module.exports = (sequelize, DataTypes) => {
 Apply the migration:
 
 ```sh
-sequelize db:migrate
+npx sequelize-cli db:migrate
 ```
 
 > If you made a mistake, you can always rollback: sequelize db:migrate:undo
@@ -145,7 +145,7 @@ SELECT * FROM users;
 Oh no! I made a mistake! I wanted `username` not `userName` as the column name. How do I rename an already existing column using migrations?
 
 ```sh
-sequelize migration:generate --name rename-userName-to-username
+npx sequelize-cli migration:generate --name rename-userName-to-username
 ```
 
 And write the following code in your migration:
@@ -164,7 +164,7 @@ module.exports = {
 Run it!
 
 ```sh
-sequelize db:migrate
+npx sequelize-cli db:migrate
 ```
 
 Make the adjustment in your user model:
@@ -211,7 +211,7 @@ SELECT * FROM users;
 So now you have one last change you'd like to make to your database. You want to have `email` be required (no nulls). That means we need to create a migration to change our already existing `email` column to not allow nulls.
 
 ```sh
-sequelize migration:generate --name change-email-to-not-allow-nulls
+npx sequelize-cli migration:generate --name change-email-to-not-allow-nulls
 ```
 
 Here is the code using the sequelize `changeColumn` method:
@@ -244,7 +244,7 @@ module.exports = {
 Apply the changes:
 
 ```sh
-sequelize db:migrate
+npx sequelize-cli db:migrate
 ```
 
 Reflect these changs in your `User` model:
