@@ -13,11 +13,9 @@
   "keywords": [],
   "author": "",
   "license": "ISC",
-  "devDependencies": {
-    "sequelize-cli": "^5.5.1"
-  },
+  "devDependencies": {},
   "dependencies": {
-    "pg": "^7.12.1",
-    "sequelize": "^5.18.4"
+    "pg": "^8.5.1",
+    "sequelize": "^6.3.5"
   }
 }
