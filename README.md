@@ -1,11 +1,22 @@
-# ![](https://ga-dash.s3.amazonaws.com/production/assets/logo-9f88ae6c9c3871690e33280fcf557f33.png) SOFTWARE ENGINEERING IMMERSIVE
-
-## Getting started
-
-1. Fork
-1. Clone
-
 # Sequelize Migrations
+
+![](https://i.pinimg.com/originals/75/90/52/7590526a801472d79ad99e388f3aae2a.png)
+
+## Overview
+
+In this lesson, we'll learn how migrations are useful for tracking changes made to our database. When you build applications, keep in mind that other developers need to understand our code. Migrations help us by keeping track of every change we performed to our database so that we can maintain data integrity and easy onboarding for other contributors.
+
+## Objectives
+
+- Learn how migrations work
+- Learn how migrations effect currently stored data
+- Learn when to use migrations
+
+## Getting Started
+
+- Fork and Clone
+
+## What Are Migrations
 
 > Take five minutes and read the Sequelize docs on migrations:
 >
