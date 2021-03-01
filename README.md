@@ -15,39 +15,32 @@ In this lesson, we'll learn how migrations are useful for tracking changes made 
 ## Getting Started
 
 - Fork and Clone
+- `npm install`
+- `sequelize db:create`
+- `sequelize db:create`
 
 ## What Are Migrations
 
-> Take five minutes and read the Sequelize docs on migrations:
->
-> - https://sequelize.org/master/manual/migrations.html
+_Take five minutes and read the Sequelize docs on migrations: [Sequelize Migrations](https://sequelize.org/master/manual/migrations.html)_
 
 Migrations are an important feature to have while managing a database. They allow us to add, remove or change columns or tables without destroying our stored information. Database integrity is key when you're building applications ready for public use. Every time you make an update to your database you should not lose any stored information.
 
-##
+## Final Schema
 
-Let's go into the repo:
+Once we finish this lesson, our `User` schema/model should resember the following:
 
-```sh
-cd sequelize-migrations
-npm install
-```
+![](assets/schema.png)
 
-Create your database:
+Constraints:
 
-```sh
-npx sequelize-cli db:create
-```
+- email
+  - string `not null`
 
-Run the existing migrations:
+## Understanding An Existing Codebase
 
-```sh
-npx sequelize-cli db:migrate
-```
+You have been provided with a Sequelize project to start with. As with any codebase that you'll open for the first time, it's always a great idea to take a look at the included files and folders. Let's start by taking a look at the provided `User` model:
 
-Take a moment to look at the User model that already exists in your codebase:
-
-models/user.js
+`models/user.js`
 
 ```js
 'use strict'
@@ -73,22 +66,93 @@ module.exports = (sequelize, DataTypes) => {
     {
       sequelize,
       modelName: 'User',
-      tableName:'users
+      tableName: 'users'
     }
   )
   return User
 }
 ```
 
-Notice how there is no userName attribute, what if we wanted to add `username` to the User model? How do we use [Sequelize Migrations](https://sequelize.org/master/manual/migrations.html) to do this?
+You'll notice that there's a missing field in the model, `username`. It looks like someone made a mistake when creating our `User` model.
+
+## Using Migrations As Records
+
+Let's take a look at the provided migration and see what happened when generating our table.
+
+`migrations/20201127061156-create-user.js`
+
+```js
+'use strict'
+module.exports = {
+  up: async (queryInterface, Sequelize) => {
+    await queryInterface.createTable('users', {
+      id: {
+        allowNull: false,
+        autoIncrement: true,
+        primaryKey: true,
+        type: Sequelize.INTEGER
+      },
+      firstName: {
+        type: Sequelize.STRING
+      },
+      lastName: {
+        type: Sequelize.STRING
+      },
+      email: {
+        type: Sequelize.STRING
+      },
+      password: {
+        type: Sequelize.STRING
+      },
+      createdAt: {
+        allowNull: false,
+        type: Sequelize.DATE
+      },
+      updatedAt: {
+        allowNull: false,
+        type: Sequelize.DATE
+      }
+    })
+  },
+  down: async (queryInterface, Sequelize) => {
+    await queryInterface.dropTable('users')
+  }
+}
+```
+
+Looking at the above migration, you'll notice that a `userName` field was never provided. It appears someone made a mistake...
+
+Luckily it's a simple fix! We can use `Sequelize` to create a new migration to make this change. Run the following command in your terminal:
 
 ```sh
-npx sequelize-cli migration:generate --name add-username-to-users
+sequelize migration:generate --name add-username-to-users
 ```
 
 > Want to know more about generating migrations using the Sequelize CLI? Run `sequelize migration:generate --help`
 
-Use the `addColumn` method in the migration:
+### Breaking Down The Migration File
+
+Once you've run the prior command, a new migration file is created for you.
+
+We could have just run `sequelize db:migrate:undo` to fix the issue, but you would run into another problem. All of the users would have been deleted from our database. In a case like this, generating a migration is always a better idea!
+
+Let's break down how a migration works:
+
+![](assets/migration_breakdown.png)
+
+### Executing Statements
+
+`Sequelize` provides us with some really cool methods to make updates to our database and tables. You may be familiar with one already:
+
+![](assets/create_table.png)
+
+With most of the provided methods, the first argument will always be the `target table`. The second or third arguments can be a column or fields/options.
+
+In the case of `createTable`, we pass in the desired table to create and the fields we want to add to the table.
+
+In order to fix our `users` table, we'll be utilizing a method called `addColumn` on the `up` transaction and `removeColumn` on the `down` transaction.
+
+Let's update our new migration with the following:
 
 ```sh
 module.exports = {
@@ -104,7 +168,13 @@ module.exports = {
 };
 ```
 
-Make sure your model matches your migration, if we add a column in our migration our model needs to reflect that in order to use that field:
+Let's see how the above works:
+
+![](assets/add_column.png)
+
+We'll link the full list of methods in the **[Resources](#resources)** section!
+
+Next, we need to reflect the pending change in our desired model. Update your `User` model with a `userName` field:
 
 ```js
 'use strict'
@@ -131,17 +201,17 @@ module.exports = (sequelize, DataTypes) => {
     {
       sequelize,
       modelName: 'User',
-      tableName:'users
+      tableName: 'users'
     }
   )
   return User
 }
 ```
 
-Apply the migration:
+Now we're ready to run the migration:
 
 ```sh
-npx sequelize-cli db:migrate
+sequelize db:migrate
 ```
 
 > If you made a mistake, you can always rollback: sequelize db:migrate:undo
@@ -153,13 +223,17 @@ psql sequelize_migrations_development
 SELECT * FROM users;
 ```
 
-Oh no! I made a mistake! I wanted `username` not `userName` as the column name. How do I rename an already existing column using migrations?
+### Impending Doom
+
+Take a second to look at our `User` model and the provided `Table` in the [Final Schema](#Final-Schema) section. You'll notice that the field is supposed to be `username` and we called it `userName`. Whoops....
+
+Let's fix this issue. Start by generating another migration file:
 
 ```sh
-npx sequelize-cli migration:generate --name rename-userName-to-username
+sequelize migration:generate --name rename-userName-to-username
 ```
 
-And write the following code in your migration:
+Update the migration file with the following code:
 
 ```js
 module.exports = {
@@ -172,13 +246,17 @@ module.exports = {
 }
 ```
 
-Run it!
+Here's a breakdown:
+
+![](assets/rename_column.png)
+
+Let's run this migration:
 
 ```sh
-npx sequelize-cli db:migrate
+sequelize db:migrate
 ```
 
-Make the adjustment in your user model:
+Next we need to reflect these changes in our model. Update your `User` model with the following:
 
 ```js
 'use strict'
@@ -200,12 +278,12 @@ module.exports = (sequelize, DataTypes) => {
       lastName: DataTypes.STRING,
       email: DataTypes.STRING,
       password: DataTypes.STRING,
-      username:Datatypes.STRING
+      username: Datatypes.STRING
     },
     {
       sequelize,
       modelName: 'User',
-      tableName:'users
+      tableName: 'users'
     }
   )
   return User
@@ -219,46 +297,42 @@ psql sequelize_migrations_development
 SELECT * FROM users;
 ```
 
-So now you have one last change you'd like to make to your database. You want to have `email` be required (no nulls). That means we need to create a migration to change our already existing `email` column to not allow nulls.
+## One Final Change
+
+If you notice the contraints section below the [Final Schema](#Final-Schema) section, emails should always be required. In techinal terms, `not null`.
+
+So now you have one last change you'd like to make to your database. You want to have `email` be required (no nulls). That means we need to create a migration to change our already existing `email` column to not allow nulls. Let's create a new migration to fix this issue:
 
 ```sh
-npx sequelize-cli migration:generate --name change-email-to-not-allow-nulls
+sequelize migration:generate --name add-null-contraint-user-email
 ```
 
-Here is the code using the sequelize `changeColumn` method:
+We'll utilize the `changeColumn` method to make this change:
 
-```sh
+```js
 module.exports = {
   up: (queryInterface, Sequelize) => {
-    return queryInterface.changeColumn(
-      'users',
-      'email',
-      {
-        type: Sequelize.STRING,
-        allowNull: false
-      }
-    );
+    return queryInterface.changeColumn('users', 'email', {
+      type: Sequelize.STRING,
+      allowNull: false
+    })
   },
   down: (queryInterface, Sequelize) => {
-    return queryInterface.changeColumn(
-      'users',
-      'email',
-      {
-        type: Sequelize.STRING,
-        allowNull: true
-      }
-    )
+    return queryInterface.changeColumn('users', 'email', {
+      type: Sequelize.STRING,
+      allowNull: true
+    })
   }
-};
+}
 ```
 
-Apply the changes:
+Now we're ready to apply the changes:
 
 ```sh
-npx sequelize-cli db:migrate
+sequelize db:migrate
 ```
 
-Reflect these changs in your `User` model:
+We now have to reflect this change in our `User` model:
 
 ```js
 'use strict'
@@ -279,16 +353,16 @@ module.exports = (sequelize, DataTypes) => {
       firstName: DataTypes.STRING,
       lastName: DataTypes.STRING,
       email: {
-        type:DataTypes.STRING,
-        allowNull:false
+        type: DataTypes.STRING,
+        allowNull: false
       },
       password: DataTypes.STRING,
-      username:Datatypes.STRING
+      username: Datatypes.STRING
     },
     {
       sequelize,
       modelName: 'User',
-      tableName:'users
+      tableName: 'users'
     }
   )
   return User
@@ -302,15 +376,15 @@ psql sequelize_migrations_development
 INSERT INTO users VALUES (2, 'Jane', 'Dee');
 ```
 
-The result should be `null value in column "email" violates not-null constraint`. Awesome.
+The result should be `null value in column "email" violates not-null constraint`.
 
 > Want to successfully `INSERT`? Try `INSERT INTO users VALUES (Default, 'Jane', 'Dee', 'jane@dee.com', 'STRONG', now(), now(), 'janeD');`
 
-## Conclusion
+## Recap
 
-There are [several other methods available](https://sequelize.readthedocs.io/en/latest/docs/migrations/#changecolumntablename-attributename-datatypeoroptions-options) to you e.g. `dropAllTables()`, `renameTable()`, and `removeColumn()` to name a few.
+In this lesson, we learned how to use migrations to fix mistakes or update our tables without destroying data. Migrations are a written record of every change you've ever made to your database. They allow you and other developers to easily pick up a foreign codebase and understand how the database was designed in a short amount of time.
 
 ## Resources
 
-- https://sequelize.readthedocs.io/en/latest/docs/migrations/#changecolumntablename-attributename-datatypeoroptions-options
-- https://sequelize.org/master/manual/migrations.html
+- [Sequelize Migrations](https://sequelize.org/master/manual/migrations.html)
+- [Sequelize QueryInterface](https://sequelize.org/master/class/lib/dialects/abstract/query-interface.js~QueryInterface.html)
