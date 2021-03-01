@@ -154,7 +154,7 @@ In order to fix our `users` table, we'll be utilizing a method called `addColumn
 
 Let's update our new migration with the following:
 
-```sh
+```js
 module.exports = {
   up: (queryInterface, Sequelize) => {
     return queryInterface.addColumn('users','userName',{
