@@ -26,7 +26,7 @@ Migrations are an important feature to have while managing a database. They allo
 
 ## Final Schema
 
-Once we finish this lesson, our `User` schema/model should resember the following:
+Once we finish this lesson, our `User` schema/model should resemble the following:
 
 ![](assets/schema.png)
 
