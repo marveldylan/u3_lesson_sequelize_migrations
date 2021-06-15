@@ -16,6 +16,7 @@ In this lesson, we'll learn how migrations are useful for tracking changes made 
 
 - Fork and Clone
 - `npm install`
+- `sequelize db:create`
 - `sequelize db:migrate`
 
 ## What Are Migrations
