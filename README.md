@@ -23,7 +23,7 @@ In this lesson, we'll learn how migrations are useful for tracking changes made 
 
 _Take five minutes and read the Sequelize docs on migrations: [Sequelize Migrations](https://sequelize.org/master/manual/migrations.html)_
 
-Migrations are an important feature to have while managing a database. They allow us to add, remove or change columns or tables without destroying our stored information. Database integrity is key when you're building applications ready for public use. Every time you make an update to your database you should not lose any stored information.
+Migrations are an important feature to have while managing a database. They allow us to add, remove or change columns or tables without destroying our stored information. Database integrity is key when you're building applications ready for public use. Every time you make an update to your database you should not lose any stored information. Like our Git Add / Commit / Push process, Migrating in Sequelize will require a few steps to get set up before we can run it
 
 ## Final Schema
 
